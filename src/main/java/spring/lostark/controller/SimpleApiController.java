@@ -159,15 +159,17 @@ public class SimpleApiController {
         result.put("message", "OK");
 
         //캐릭터 json array
-        ObjectNode dataInfo = mapper.createObjectNode();
         ArrayNode arrayNode = mapper.createArrayNode();
 
         //json put set
         for (int i = 0; i < liSize; i++) {
-            dataInfo.put("contentName"+i, contentName.get(i));
-            dataInfo.put("contentTime"+i, contentTime.get(i));
+            ObjectNode dataInfo = mapper.createObjectNode();
+            dataInfo.put("contentId", i);
+            dataInfo.put("contentName", contentName.get(i));
+            dataInfo.put("contentTime", contentTime.get(i));
+
+            arrayNode.add(dataInfo);
         }
-        arrayNode.add(dataInfo);
 
         result.set("data", arrayNode);
 
