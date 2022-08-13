@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.util.JSONPObject;
+import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,15 +14,15 @@ import java.io.IOException;
 
 @RestController
 public class SimpleApiController {
+
     @GetMapping("/api/v1/test")
     public ObjectNode getTest() throws IOException {
 
         final String url = "https://lostark.game.onstove.com/Profile/Character/엉왜";
-
-        Document document = Jsoup.connect(url).ignoreContentType(true).get();
+        Document document = getDocument(url);
 
         //char info
-        String itemLv = document.select(".level-info2__item").get(0).ownText();
+        String itemLv = document.select(".level-info2__item").text().replace("Lv.","").replace("달성 아이템 레벨","").substring(0, 5);
         String charLv = document.select(".level-info__item").text().replace("Lv.", "").replace("전투 레벨", "");
         String totalLv = document.select(".level-info__expedition").text().replace("Lv.", "").replace("원정대 레벨", "");
         String server = document.select(".profile-character-info__server").text().replace("@", "");
@@ -49,7 +50,7 @@ public class SimpleApiController {
         charInfo.put("server", server);
         charInfo.put("guild", guild);
         charInfo.put("skillPoint", skillPoint);
-        charInfo.put("carve", card);
+        charInfo.put("carve", carve);
         charInfo.put("attDef", attDef);
         charInfo.put("charImage", charImage);
         charInfo.put("card", card);
@@ -58,7 +59,62 @@ public class SimpleApiController {
         result.set("data", arrayNode);
 
         return result;
+    }
 
-        //githook 테스트2
+    @GetMapping("/api/v1/loatool")
+    public ObjectNode loatool() throws IOException {
+        Document highUrl = getDocument("https://loatool.taeu.kr/calculator/craft/117");
+        Document midUrl = getDocument("https://loatool.taeu.kr/calculator/craft/131");
+
+        //상급 오레하 시세(가격, 시세차익(20개), 사용이득, 판매이득)
+        String highRate = highUrl.select("#app > div > main > div > div > div > div > div.d-flex.flex-row.justify-center > div.main-container.d-flex.flex-row.justify-center > div > div:nth-child(3) > div.pb-0.pl-md-2.col-md-6.col-12 > div > div.v-card__text.text--primary > div > div:nth-child(4) > div > div > div").text();
+        String highEarn = highUrl.select("#app > div > main > div > div > div > div > div.d-flex.flex-row.justify-center > div.main-container.d-flex.flex-row.justify-center > div > div:nth-child(3) > div.pb-0.pl-md-2.col-md-6.col-12 > div > div.v-card__text.text--primary > div > div:nth-child(16) > span").text();
+        String highUse = highUrl.select("#app > div > main > div > div > div > div > div.d-flex.flex-row.justify-center > div.main-container.d-flex.flex-row.justify-center > div > div:nth-child(1) > div > div > div.v-card__text.text-center > div:nth-child(2) > div:nth-child(2) > span").text();
+        String highSell = highUrl.select("#app > div > main > div > div > div > div > div.d-flex.flex-row.justify-center > div.main-container.d-flex.flex-row.justify-center > div > div:nth-child(1) > div > div > div.v-card__text.text-center > div:nth-child(2) > div:nth-child(3) > span").text();
+
+        //중급 오레하 시세(가격, 시세차익(30개), 사용이득, 판매이득)
+        String midRate = midUrl.select("#app > div > main > div > div > div > div > div.d-flex.flex-row.justify-center > div.main-container.d-flex.flex-row.justify-center > div > div:nth-child(3) > div.pb-0.pl-md-2.col-md-6.col-12 > div > div.v-card__text.text--primary > div > div:nth-child(4) > div > div > div").text();
+        String midEarn = midUrl.select("#app > div > main > div > div > div > div > div.d-flex.flex-row.justify-center > div.main-container.d-flex.flex-row.justify-center > div > div:nth-child(3) > div.pb-0.pl-md-2.col-md-6.col-12 > div > div.v-card__text.text--primary > div > div:nth-child(16) > span").text();
+        String midUse = midUrl.select("#app > div > main > div > div > div > div > div.d-flex.flex-row.justify-center > div.main-container.d-flex.flex-row.justify-center > div > div:nth-child(1) > div > div > div.v-card__text.text-center > div:nth-child(2) > div:nth-child(2) > span").text();
+        String midSell = midUrl.select("#app > div > main > div > div > div > div > div.d-flex.flex-row.justify-center > div.main-container.d-flex.flex-row.justify-center > div > div:nth-child(1) > div > div > div.v-card__text.text-center > div:nth-child(2) > div:nth-child(3) > span").text();
+
+        System.out.println("highRate = " + highRate);
+        System.out.println("highEarn = " + highEarn);
+        System.out.println("highUse = " + highUse);
+        System.out.println("highSell = " + highSell);
+        System.out.println("midRate = " + midRate);
+        System.out.println("midEarn = " + midEarn);
+        System.out.println("midUse = " + midUse);
+        System.out.println("midSell = " + midSell);
+
+        //전체 json object
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode result = mapper.createObjectNode();
+        result.put("code", "200");
+        result.put("message", "OK");
+
+        //캐릭터 json array
+        ObjectNode charInfo = mapper.createObjectNode();
+        ArrayNode arrayNode = mapper.createArrayNode();
+
+        //json put set
+        charInfo.put("highRate", highRate);
+        charInfo.put("highEarn", highEarn);
+        charInfo.put("highUse", highUse);
+        charInfo.put("highSell", highSell);
+        charInfo.put("midRate", midRate);
+        charInfo.put("midEarn", midEarn);
+        charInfo.put("midUse", midUse);
+        charInfo.put("midSell", midSell);
+
+        arrayNode.add(charInfo);
+        result.set("data", arrayNode);
+
+        return result;
+    }
+
+
+    private Document getDocument(String url) throws IOException {
+        return Jsoup.connect(url).ignoreContentType(true).get();
     }
 }
