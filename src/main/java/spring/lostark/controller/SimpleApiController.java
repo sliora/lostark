@@ -94,20 +94,47 @@ public class SimpleApiController {
         result.put("message", "OK");
 
         //캐릭터 json array
-        ObjectNode charInfo = mapper.createObjectNode();
+        ObjectNode data = mapper.createObjectNode();
         ArrayNode arrayNode = mapper.createArrayNode();
 
         //json put set
-        charInfo.put("highRate", highRate);
-        charInfo.put("highEarn", highEarn);
-        charInfo.put("highUse", highUse);
-        charInfo.put("highSell", highSell);
-        charInfo.put("midRate", midRate);
-        charInfo.put("midEarn", midEarn);
-        charInfo.put("midUse", midUse);
-        charInfo.put("midSell", midSell);
+        data.put("highRate", highRate);
+        data.put("highEarn", highEarn);
+        data.put("highUse", highUse);
+        data.put("highSell", highSell);
+        data.put("midRate", midRate);
+        data.put("midEarn", midEarn);
+        data.put("midUse", midUse);
+        data.put("midSell", midSell);
 
-        arrayNode.add(charInfo);
+        arrayNode.add(data);
+        result.set("data", arrayNode);
+
+        return result;
+    }
+
+    @GetMapping("/api/v1/chaosmap")
+    public ObjectNode chaosMap() throws IOException {
+        Document mapUrl = getDocument("https://loatool.taeu.kr/calculator/secret-map");
+
+        String evenPoint =mapUrl.select("#app > div > main > div > div > div > div > div.d-flex.flex-row.justify-center > div.main-container.d-flex.flex-row.justify-center > div > div.v-window.v-item-group.theme--light.v-tabs-items > div > div.v-window-item.v-window-item--active > div:nth-child(1) > div > div:nth-child(3) > div:nth-child(2) > span").text();
+        String bestPoint = mapUrl.select("#app > div > main > div > div > div > div > div.d-flex.flex-row.justify-center > div.main-container.d-flex.flex-row.justify-center > div > div.v-window.v-item-group.theme--light.v-tabs-items > div > div.v-window-item.v-window-item--active > div:nth-child(1) > div > div:nth-child(4) > div:nth-child(2) > span").text();
+
+        //전체 json object
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode result = mapper.createObjectNode();
+        result.put("code", "200");
+        result.put("message", "OK");
+
+        //data json array
+        ObjectNode data = mapper.createObjectNode();
+        ArrayNode arrayNode = mapper.createArrayNode();
+
+        //json put set
+        data.put("evenPoint", evenPoint);
+        data.put("bestPoint", bestPoint);
+
+        arrayNode.add(data);
         result.set("data", arrayNode);
 
         return result;
