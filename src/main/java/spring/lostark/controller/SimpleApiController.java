@@ -158,23 +158,13 @@ public class SimpleApiController {
         List<String> contentName = contentUrl.select("#timerLeftContent > a > div.hotbossPart > ul").select("li").select("p.npcname").eachText();
         List<String> contentTime = contentUrl.select("#timerLeftContent > a > div.hotbossPart > ul").select("li").select("p.gentime").eachText();
         List<String> endDateTime = contentUrl.select("#timerLeftContent > a > div.hotbossPart > ul").select("li").select("p").eachAttr("data-datetime");
+        List<String> contentImg = contentUrl.select("#timerLeftContent > a > div.hotbossPart > ul").select("li").select("img").eachAttr("src");
 
+
+        //시작시간, 시작시간변환
         String startDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-        
         LocalDateTime changeDate1 = LocalDateTime.parse(startDateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
-/*
-        LocalDateTime changeDate2 = LocalDateTime.parse(endDateTime.get(0), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-        Duration duration = Duration.between(changeDate1, changeDate2);
-
-
-        long time = duration.getSeconds();
-        long hour = time/(60*60);
-        long minute = time/60-(hour*60);
-        long second = time%60;*/
-
-        //System.out.println(time == 0 ? "출현중" : hour + "시 " + minute + "분 " + "뒤 출현");
-        
         //전체 json object
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
@@ -190,6 +180,7 @@ public class SimpleApiController {
             dataInfo.put("contentId", i);
             dataInfo.put("contentName", contentName.get(i));
             dataInfo.put("contentTime", contentTime.get(i));
+            dataInfo.put("contentImg", contentImg.get(i));
 
             LocalDateTime changeDate2 = LocalDateTime.parse(endDateTime.get(i), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
             Duration duration = Duration.between(changeDate1, changeDate2);
