@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.ListIterator;
 
 @RestController
 public class SimpleApiController {
@@ -141,6 +143,36 @@ public class SimpleApiController {
         return result;
     }
 
+    @GetMapping("/api/v1/homework")
+    public ObjectNode homework() throws IOException {
+
+        Document contentUrl = getDocument("https://lostark.inven.co.kr/");
+        int liSize = contentUrl.select("#timerLeftContent > a > div.hotbossPart > ul").select("li").size();
+        List<String> li = contentUrl.select("#timerLeftContent > a > div.hotbossPart > ul").select("li").eachText();
+        List<String> contentName = contentUrl.select("#timerLeftContent > a > div.hotbossPart > ul").select("li").select("p.npcname").eachText();
+        List<String> contentTime = contentUrl.select("#timerLeftContent > a > div.hotbossPart > ul").select("li").select("p.gentime").eachText();
+
+        //전체 json object
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode result = mapper.createObjectNode();
+        result.put("code", "200");
+        result.put("message", "OK");
+
+        //캐릭터 json array
+        ObjectNode dataInfo = mapper.createObjectNode();
+        ArrayNode arrayNode = mapper.createArrayNode();
+
+        //json put set
+        for (int i = 0; i < liSize; i++) {
+            dataInfo.put("contentName"+i, contentName.get(i));
+            dataInfo.put("contentTime"+i, contentTime.get(i));
+        }
+        arrayNode.add(dataInfo);
+
+        result.set("data", arrayNode);
+
+        return result;
+    }
 
     private Document getDocument(String url) throws IOException {
         return Jsoup.connect(url).ignoreContentType(true).get();
