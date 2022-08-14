@@ -197,6 +197,8 @@ public class SimpleApiController {
     }
 
     private Document getDocument(String url) throws IOException {
-        return Jsoup.connect(url).ignoreContentType(true).get();
+        return Jsoup.connect(url).ignoreContentType(true).header("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0").get();
+
+        //header = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0'}
     }
 }
