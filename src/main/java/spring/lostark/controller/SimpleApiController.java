@@ -160,7 +160,6 @@ public class SimpleApiController {
         List<String> endDateTime = contentUrl.select("#timerLeftContent > a > div.hotbossPart > ul").select("li").select("p").eachAttr("data-datetime");
         List<String> contentImg = contentUrl.select("#timerLeftContent > a > div.hotbossPart > ul").select("li").select("img").eachAttr("src");
 
-
         //시작시간, 시작시간변환
         String startDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         LocalDateTime changeDate1 = LocalDateTime.parse(startDateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
@@ -192,7 +191,6 @@ public class SimpleApiController {
 
             arrayNode.add(dataInfo);
         }
-
         result.set("data", arrayNode);
 
         return result;
