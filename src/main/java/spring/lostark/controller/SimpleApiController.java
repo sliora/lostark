@@ -198,10 +198,10 @@ public class SimpleApiController {
 
     private Document getDocument(String url) throws IOException {
         return Jsoup.connect(url)
-                .header("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0")
-                .header("Host", "loatool.taeu.kr")
+                .header("User-Agent","Yeti")
                 .header("Accept-Encoding","gzip, deflate, br")
                 .header("Connection", "keep-alive")
+                .ignoreHttpErrors(true)
                 .ignoreContentType(true).get();
 
         //header = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0'}
