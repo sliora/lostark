@@ -16,7 +16,11 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler(resourcesUriPath + "/**")
-                .addResourceLocations("file://" + resourcesLocation);
+                .addResourceLocations("file://" + resourcesLocation)
+                .resourceChain(true)
+                .addResolver(new utf8DecodeResourceResolver());
+
 
     }
+
 }
