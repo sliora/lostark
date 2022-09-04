@@ -9,14 +9,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
     @Value("${resources.location}")
-    private String resourcePath;
-
+    private String resourcesLocation;
     @Value("${resources.uri_path:}")
-    private String uploadPath;
+    private String resourcesUriPath;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler(uploadPath + "/**")
-                .addResourceLocations("file://" + resourcePath);
+        registry.addResourceHandler(resourcesUriPath + "/**")
+                .addResourceLocations("file://" + resourcesLocation);
+
     }
 }
