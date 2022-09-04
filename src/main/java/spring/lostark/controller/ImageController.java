@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class ImageController {
 
-    @GetMapping("/upload/{param}")
+    //@GetMapping("/upload/{param}")
     public String imageView(@PathVariable String param) {
 
         return "image";
