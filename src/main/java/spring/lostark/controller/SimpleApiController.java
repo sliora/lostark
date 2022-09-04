@@ -123,11 +123,15 @@ public class SimpleApiController {
 
     @GetMapping("/api/v1/chaosmap")
     public ObjectNode chaosMap() throws IOException {
-        Document mapUrl = getDocument("https://loatool.taeu.kr/calculator/secret-map");
+        Document mapUrl = getDocument("https://loachart.com/secretmap");
 
-        String evenPoint =mapUrl.select("#app > div > main > div > div > div > div > div.d-flex.flex-row.justify-center > div.main-container.d-flex.flex-row.justify-center > div > div.v-window.v-item-group.theme--light.v-tabs-items > div > div.v-window-item.v-window-item--active > div:nth-child(1) > div > div:nth-child(3) > div:nth-child(2) > span").text();
-        String bestPoint = mapUrl.select("#app > div > main > div > div > div > div > div.d-flex.flex-row.justify-center > div.main-container.d-flex.flex-row.justify-center > div > div.v-window.v-item-group.theme--light.v-tabs-items > div > div.v-window-item.v-window-item--active > div:nth-child(1) > div > div:nth-child(4) > div:nth-child(2) > span").text();
-        String avgPoint = mapUrl.select("#app > div > main > div > div > div > div > div.d-flex.flex-row.justify-center > div.main-container.d-flex.flex-row.justify-center > div > div.v-window.v-item-group.theme--light.v-tabs-items > div > div.v-window-item.v-window-item--active > div:nth-child(1) > div > div:nth-child(5) > div:nth-child(2) > span").text();
+        String evenPoint =mapUrl.select("#breakpoint").html();
+        String bestPoint = mapUrl.select("#fairprice").html();
+        //String avgPoint = mapUrl.select("#app > div > main > div > div > div > div > div.d-flex.flex-row.justify-center > div.main-container.d-flex.flex-row.justify-center > div > div.v-window.v-item-group.theme--light.v-tabs-items > div > div.v-window-item.v-window-item--active > div:nth-child(1) > div > div:nth-child(5) > div:nth-child(2) > span").text();
+
+        System.out.println("mapUrl = " + mapUrl);
+        System.out.println(evenPoint);
+        System.out.println(bestPoint);
         //전체 json object
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
@@ -141,7 +145,7 @@ public class SimpleApiController {
         //json put set
         data.put("evenPoint", evenPoint);
         data.put("bestPoint", bestPoint);
-        data.put("avgPoint", avgPoint);
+        //data.put("avgPoint", avgPoint);
 
         arrayNode.add(data);
         result.set("data", arrayNode);
@@ -199,11 +203,9 @@ public class SimpleApiController {
     private Document getDocument(String url) throws IOException {
         return Jsoup.connect(url)
                 .header("User-Agent","Yeti")
-                .header("Accept-Encoding","gzip, deflate, br")
-                .header("Connection", "keep-alive")
                 .ignoreHttpErrors(true)
                 .ignoreContentType(true).get();
 
-        //header = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0'}
+
     }
 }
