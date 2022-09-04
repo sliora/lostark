@@ -1,7 +1,11 @@
-server:
-  tomcat:
-    uri-encoding: UTF-8
+
 
 resources:
   location: /home/opc/upload/
   uri_path: /upload
+
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
