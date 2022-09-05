@@ -1,5 +1,4 @@
-
-
 resources:
-  location: /home/opc/upload/
+  #location: /home/opc/upload/
+  location: /Users/zerom/downloads/
   uri_path: /upload
